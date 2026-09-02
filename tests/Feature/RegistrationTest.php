@@ -56,7 +56,8 @@ it('stores a participant and all bonsais submitted in one form', function () {
         ->toContain('Bonsai koleksi baru');
     expect(Bonsai::query()->where('participant_id', $participant->id)->pluck('size')->all())
         ->toContain('Mame');
-    Storage::disk('public')->assertExists('bonsais/Muhammad Raihan - Bonsai Beringin - Ficus.jpg');
+    $firstBonsai = $participant->bonsais->firstWhere('bonsai_type', 'Bonsai Beringin / Ficus');
+    Storage::disk('public')->assertExists($firstBonsai->getPhotoMedia()->getPathRelativeToRoot());
 });
 
 it('creates a new bonsai type from the public modal endpoint', function () {

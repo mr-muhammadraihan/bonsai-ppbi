@@ -215,7 +215,13 @@ class Bonsai extends Model implements HasMedia
         $bonsaiTypeName = $this->bonsai_type
             ?: $this->bonsaiType?->name
             ?: 'Other';
-        $name = $participantName.' - '.$bonsaiTypeName;
+        $name = implode(' - ', [
+            $participantName,
+            $bonsaiTypeName,
+            $this->size ?: 'Unknown',
+            $this->class ?: 'Unknown',
+            $this->id,
+        ]);
         $name = preg_replace('/[\\/:*?"<>|]+/', ' - ', $name) ?? $name;
         $name = Str::squish($name);
 
