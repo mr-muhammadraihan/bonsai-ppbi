@@ -7,19 +7,7 @@
         <button type="button" data-remove-bonsai class="text-sm font-medium text-red-700 hover:text-red-900">Hapus</button>
     </div>
     <div class="grid gap-5 md:grid-cols-2">
-        <div class="md:col-span-2">
-            <label for="bonsais-{{ $index }}-type" class="mb-2 block text-sm font-medium">Jenis bonsai</label>
-            <div data-type-field class="flex gap-3">
-                <select id="bonsais-{{ $index }}-type" name="bonsais[{{ $index }}][bonsai_type_id]" required data-type-select class="min-w-0 flex-1 rounded-xl border-stone-300 bg-white px-4 py-3 shadow-sm focus:border-emerald-600 focus:ring-emerald-600">
-                    <option value="">Pilih jenis bonsai</option>
-                    @foreach ($bonsaiTypes as $type)
-                        <option value="{{ $type->id }}" @selected((string) $value('bonsai_type_id') === (string) $type->id)>{{ $type->name }}</option>
-                    @endforeach
-                </select>
-                <button type="button" data-add-type class="shrink-0 rounded-xl border border-emerald-800 px-4 text-sm font-semibold text-emerald-800 hover:bg-emerald-50">+ Baru</button>
-            </div>
-            @error("bonsais.{$index}.bonsai_type_id")<p class="mt-1 text-sm text-red-700">{{ $message }}</p>@enderror
-        </div>
+        <x-registration-input name="bonsai_type" label="Jenis bonsai" :index="$index" :value="$value('bonsai_type')" required />
         <div>
             <label for="bonsais-{{ $index }}-size" class="mb-2 block text-sm font-medium">Ukuran</label>
             <select id="bonsais-{{ $index }}-size" name="bonsais[{{ $index }}][size]" required class="w-full rounded-xl border-stone-300 bg-white px-4 py-3 shadow-sm focus:border-emerald-600 focus:ring-emerald-600">

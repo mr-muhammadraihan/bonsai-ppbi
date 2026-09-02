@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Participants\Schemas;
 
-use App\Models\BonsaiType;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -19,13 +18,6 @@ class ParticipantForm
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                TextInput::make('no_hp')
-                    ->required()
-                    ->tel(),
-                TextInput::make('email')
-                    ->label('Email address')
-                    ->email()
-                    ->required(),
 
                 Repeater::make('bonsais')
                     ->label('Data Bonsai')
@@ -40,18 +32,9 @@ class ParticipantForm
                             ])
                             ->required(),
 
-                        Select::make('bonsai_type_id')
+                        TextInput::make('bonsai_type')
                             ->label('Jenis Bonsai')
-                            ->relationship('bonsaiType', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->createOptionForm([
-                                TextInput::make('name')
-                                    ->label('Jenis Bonsai Baru')
-                                    ->required()
-                                    ->maxLength(255),
-                            ])
-                            ->createOptionUsing(fn (array $data): int => BonsaiType::create($data)->getKey())
+                            ->maxLength(255)
                             ->required(),
 
                         Select::make('class')

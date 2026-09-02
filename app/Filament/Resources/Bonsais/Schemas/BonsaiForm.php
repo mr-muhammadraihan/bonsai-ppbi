@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Bonsais\Schemas;
 
-use App\Models\BonsaiType;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -25,20 +24,11 @@ class BonsaiForm
 
                 Placeholder::make('bonsai_type_name')
                     ->label('ID Bonsai')
-                    ->content(fn ($record): string => $record?->bonsaiType?->name ?? '-'),
+                    ->content(fn ($record): string => $record?->bonsai_type ?: $record?->bonsaiType?->name ?? '-'),
 
-                Select::make('bonsai_type_id')
+                TextInput::make('bonsai_type')
                     ->label('Jenis Bonsai')
-                    ->relationship('bonsaiType', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        TextInput::make('name')
-                            ->label('Jenis Bonsai Baru')
-                            ->required()
-                            ->maxLength(255),
-                    ])
-                    ->createOptionUsing(fn (array $data): int => BonsaiType::create($data)->getKey())
+                    ->maxLength(255)
                     ->required(),
 
                 Select::make('size')
@@ -74,7 +64,7 @@ class BonsaiForm
                     ->label('Foto Bonsai Saat Ini')
                     ->content(function ($record) {
                         $media = $record?->getPhotoMedia();
-                        $url = $media?->getAvailableUrl(['optimized']);
+                        $url = $media?->getUrl();
 
                         if (! $url && $record?->photo) {
                             $url = Storage::disk('public')->url($record->photo);
@@ -92,9 +82,8 @@ class BonsaiForm
                     ->label('Foto Bonsai')
                     ->collection('bonsai-photos')
                     ->image()
-                    ->conversion('optimized')
                     ->maxSize(51200)
-                    ->helperText('Foto asli tetap disimpan. Versi tampilan dikompres JPEG kualitas tinggi tanpa mengubah resolusi.')
+                    ->helperText('Foto dikompres maksimal 1 MB dengan resolusi dipertahankan selama memungkinkan.')
                     ->extraInputAttributes([
                         'capture' => 'environment',
                     ])

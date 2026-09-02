@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRegistrationRequest;
-use App\Models\BonsaiType;
 use App\Models\Participant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
@@ -14,9 +13,7 @@ class RegistrationController extends Controller
 {
     public function create(): View
     {
-        return view('registration.create', [
-            'bonsaiTypes' => BonsaiType::query()->orderBy('name')->get(['id', 'name']),
-        ]);
+        return view('registration.create');
     }
 
     public function store(StoreRegistrationRequest $request): RedirectResponse
@@ -24,7 +21,11 @@ class RegistrationController extends Controller
         $validated = $request->validated();
 
         $participant = DB::transaction(function () use ($validated): Participant {
-            $participant = Participant::create(Arr::only($validated, ['name', 'email', 'no_hp']));
+            $participant = Participant::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'] ?? '',
+                'no_hp' => $validated['no_hp'] ?? '',
+            ]);
 
             foreach ($validated['bonsais'] as $bonsaiData) {
                 $photo = $bonsaiData['photo'];

@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreRegistrationRequest extends FormRequest
 {
@@ -25,10 +24,10 @@ class StoreRegistrationRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'no_hp' => ['required', 'string', 'max:30'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'no_hp' => ['nullable', 'string', 'max:30'],
             'bonsais' => ['required', 'array', 'min:1', 'max:20'],
-            'bonsais.*.bonsai_type_id' => ['required', 'integer', Rule::exists('bonsai_types', 'id')],
+            'bonsais.*.bonsai_type' => ['required', 'string', 'max:255'],
             'bonsais.*.size' => ['required', 'in:Small,Medium,Large'],
             'bonsais.*.class' => ['required', 'in:Jadi,Prospek'],
             'bonsais.*.status' => ['required', 'in:Peserta,Pemenang'],
@@ -44,7 +43,7 @@ class StoreRegistrationRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'bonsais.*.bonsai_type_id' => 'jenis bonsai',
+            'bonsais.*.bonsai_type' => 'jenis bonsai',
             'bonsais.*.size' => 'ukuran bonsai',
             'bonsais.*.class' => 'kelas bonsai',
             'bonsais.*.status' => 'status bonsai',

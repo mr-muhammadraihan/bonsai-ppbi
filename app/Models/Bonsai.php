@@ -21,6 +21,7 @@ class Bonsai extends Model implements HasMedia
     protected $fillable = [
         'participant_id',
         'bonsai_type_id',
+        'bonsai_type',
         'bonsai_code',
         'size',
         'class',
@@ -92,13 +93,6 @@ class Bonsai extends Model implements HasMedia
         $this->addMediaCollection('bonsai-photos')->useDisk('public')->singleFile();
     }
 
-    public function registerMediaConversions(?Media $media = null): void
-    {
-        $this->addMediaConversion('optimized')
-            ->quality(90)
-            ->nonQueued();
-    }
-
     public function getPhotoMedia(): ?Media
     {
         return $this->getFirstMedia('bonsai-photos');
@@ -155,7 +149,9 @@ class Bonsai extends Model implements HasMedia
     protected static function booted(): void
     {
         static::creating(function (Bonsai $bonsai) {
-            $typeName = BonsaiType::query()->whereKey($bonsai->bonsai_type_id)->value('name') ?: 'Other';
+            $typeName = $bonsai->bonsai_type
+                ?: BonsaiType::query()->whereKey($bonsai->bonsai_type_id)->value('name')
+                ?: 'Other';
             $prefix = Str::upper(Str::slug($typeName, ''));
 
             $lastNumber = static::where('bonsai_code', 'like', "{$prefix}-%")
@@ -216,7 +212,9 @@ class Bonsai extends Model implements HasMedia
     private function photoFilename(string $extension): string
     {
         $participantName = $this->participant?->name ?? 'Peserta';
-        $bonsaiTypeName = $this->bonsaiType?->name ?? 'Other';
+        $bonsaiTypeName = $this->bonsai_type
+            ?: $this->bonsaiType?->name
+            ?: 'Other';
         $name = $participantName.' - '.$bonsaiTypeName;
         $name = preg_replace('/[\\/:*?"<>|]+/', ' - ', $name) ?? $name;
         $name = Str::squish($name);

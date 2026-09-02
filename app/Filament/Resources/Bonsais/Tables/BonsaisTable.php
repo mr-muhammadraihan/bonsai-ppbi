@@ -21,13 +21,13 @@ class BonsaisTable
         return $table
             ->columns([
                 ImageColumn::make('photo')
-                    ->imageHeight(300)
+                    ->imageHeight(500)
                     ->checkFileExistence(false)
                     ->label('Foto Bonsai')
-                    ->state(fn (Bonsai $record): ?string => $record->getPhotoMedia()?->getUrl('optimized')),
+                    ->state(fn (Bonsai $record): ?string => $record->getPhotoMedia()?->getUrl()),
                 // ->directory('bonsais'),
 
-                TextColumn::make('bonsaiType.name')
+                TextColumn::make('bonsai_type')
                     ->label('ID Bonsai')
                     ->searchable()
                     ->sortable(),
@@ -72,13 +72,6 @@ class BonsaisTable
             ->defaultSort('created_at', 'desc')
             ->recordActions([
                 EditAction::make(),
-
-                Action::make('download_photo')
-                    ->label('Download Foto')
-                    ->icon('heroicon-m-arrow-down-tray')
-                    ->color('gray')
-                    ->action(fn (Bonsai $record) => $record->downloadPhoto())
-                    ->visible(fn (Bonsai $record): bool => $record->getPhotoMedia() !== null || filled($record->photo)),
 
                 // Download Participant Certificate
                 Action::make('download_participant_certificate')

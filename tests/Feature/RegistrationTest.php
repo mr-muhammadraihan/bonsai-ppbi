@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Bonsai;
-use App\Models\BonsaiType;
 use App\Models\Participant;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -16,18 +15,19 @@ it('renders the public registration form', function () {
     $response->assertOk()
         ->assertSee('Data peserta')
         ->assertSee('Data bonsai')
+        ->assertSee('Jenis bonsai')
         ->assertSee('Tambah bonsai')
+        ->assertDontSee('Nomor WhatsApp')
+        ->assertDontSee('Email')
         ->assertSee('capture="environment"', false);
 });
 
 it('stores a participant and all bonsais submitted in one form', function () {
     $response = $this->post('/registrasi', [
         'name' => 'Muhammad Raihan',
-        'email' => 'raihan@example.com',
-        'no_hp' => '08123456789',
         'bonsais' => [
             [
-                'bonsai_type_id' => BonsaiType::query()->where('name', 'Bonsai Beringin / Ficus')->value('id'),
+                'bonsai_type' => 'Bonsai Beringin / Ficus',
                 'size' => 'Medium',
                 'class' => 'Jadi',
                 'status' => 'Peserta',
@@ -36,7 +36,7 @@ it('stores a participant and all bonsais submitted in one form', function () {
                 'photo' => UploadedFile::fake()->image('beringin.jpg'),
             ],
             [
-                'bonsai_type_id' => BonsaiType::factory()->create(['name' => 'Bonsai koleksi baru'])->id,
+                'bonsai_type' => 'Bonsai koleksi baru',
                 'size' => 'Small',
                 'class' => 'Prospek',
                 'status' => 'Peserta',
@@ -47,11 +47,11 @@ it('stores a participant and all bonsais submitted in one form', function () {
         ],
     ]);
 
-    $participant = Participant::query()->where('email', 'raihan@example.com')->firstOrFail();
+    $participant = Participant::query()->where('name', 'Muhammad Raihan')->firstOrFail();
 
     $response->assertRedirect(route('registration.create'));
     expect($participant->bonsais)->toHaveCount(2);
-    expect(Bonsai::query()->where('participant_id', $participant->id)->with('bonsaiType')->get()->pluck('bonsaiType.name')->all())
+    expect(Bonsai::query()->where('participant_id', $participant->id)->pluck('bonsai_type')->all())
         ->toContain('Bonsai koleksi baru');
     Storage::disk('public')->assertExists('bonsais/Muhammad Raihan - Bonsai Beringin - Ficus.jpg');
 });
@@ -69,10 +69,8 @@ it('creates a new bonsai type from the public modal endpoint', function () {
 it('rejects a registration without a bonsai photo', function () {
     $response = $this->from('/registrasi')->post('/registrasi', [
         'name' => 'Muhammad Raihan',
-        'email' => 'raihan@example.com',
-        'no_hp' => '08123456789',
         'bonsais' => [[
-            'bonsai_type_id' => BonsaiType::query()->where('name', 'Bonsai Beringin / Ficus')->value('id'),
+            'bonsai_type' => 'Bonsai Beringin / Ficus',
             'size' => 'Medium',
             'class' => 'Jadi',
             'status' => 'Peserta',
@@ -81,5 +79,5 @@ it('rejects a registration without a bonsai photo', function () {
 
     $response->assertRedirect('/registrasi')
         ->assertSessionHasErrors('bonsais.0.photo');
-    expect(Participant::query()->where('email', 'raihan@example.com')->exists())->toBeFalse();
+    expect(Participant::query()->where('name', 'Muhammad Raihan')->exists())->toBeFalse();
 });

@@ -43,12 +43,10 @@
                         <p class="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">01 / Partisipasi</p>
                         <h2 class="mt-2 text-2xl font-semibold">Data peserta</h2>
                     </div>
-                    <span class="hidden text-sm text-stone-500 sm:block">Semua kolom wajib diisi</span>
+                    <span class="hidden text-sm text-stone-500 sm:block">Nama peserta wajib diisi</span>
                 </div>
-                <div class="grid gap-5 md:grid-cols-3">
+                <div class="grid gap-5 md:grid-cols-2">
                     <x-registration-input name="name" label="Nama lengkap" required />
-                    <x-registration-input name="email" label="Email" type="email" required />
-                    <x-registration-input name="no_hp" label="Nomor WhatsApp" type="tel" required />
                 </div>
             </section>
 
@@ -65,7 +63,7 @@
                 <div id="bonsai-list" class="space-y-6">
                     @php($bonsais = old('bonsais', [[]]))
                     @foreach ($bonsais as $index => $bonsai)
-                        @include('registration._bonsai-fields', ['index' => $index, 'bonsai' => $bonsai, 'bonsaiTypes' => $bonsaiTypes])
+                         @include('registration._bonsai-fields', ['index' => $index, 'bonsai' => $bonsai])
                     @endforeach
                 </div>
             </section>
@@ -78,94 +76,25 @@
     </main>
 
     <template id="bonsai-template">
-        @include('registration._bonsai-fields', ['index' => '__INDEX__', 'bonsai' => [], 'bonsaiTypes' => $bonsaiTypes])
-    </template>
-    <div id="type-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-stone-950/60 px-6" role="dialog" aria-modal="true" aria-labelledby="type-modal-title">
-        <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl sm:p-8">
-            <div class="flex items-start justify-between gap-4">
-                <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">Jenis baru</p>
-                    <h2 id="type-modal-title" class="mt-2 text-2xl font-semibold">Tambah jenis bonsai</h2>
-                </div>
-                <button type="button" id="close-type-modal" class="text-2xl leading-none text-stone-400 hover:text-stone-700" aria-label="Tutup">&times;</button>
-            </div>
-            <form id="type-form" class="mt-6 space-y-4">
-                <div>
-                    <label for="new-type-name" class="mb-2 block text-sm font-medium">Nama jenis bonsai</label>
-                    <input id="new-type-name" name="name" required maxlength="255" class="w-full rounded-xl border-stone-300 px-4 py-3 shadow-sm focus:border-emerald-600 focus:ring-emerald-600" placeholder="Contoh: Bonsai Kemuning">
-                    <p id="type-error" class="mt-2 hidden text-sm text-red-700"></p>
-                </div>
-                <button type="submit" class="w-full rounded-full bg-emerald-800 px-5 py-3 font-semibold text-white hover:bg-emerald-700">Simpan jenis bonsai</button>
-            </form>
-        </div>
-    </div>
-    <script>
-        const list = document.querySelector('#bonsai-list');
-        const template = document.querySelector('#bonsai-template');
-        const modal = document.querySelector('#type-modal');
-        const typeForm = document.querySelector('#type-form');
-        const typeName = document.querySelector('#new-type-name');
-        const typeError = document.querySelector('#type-error');
-        let activeTypeSelect = null;
-        let index = list.querySelectorAll('[data-bonsai]').length;
+         @include('registration._bonsai-fields', ['index' => '__INDEX__', 'bonsai' => []])
+     </template>
+     <script>
+         const list = document.querySelector('#bonsai-list');
+         const template = document.querySelector('#bonsai-template');
+         let index = list.querySelectorAll('[data-bonsai]').length;
 
         document.querySelector('#add-bonsai').addEventListener('click', () => {
             list.insertAdjacentHTML('beforeend', template.innerHTML.replaceAll('__INDEX__', index));
             index++;
         });
 
-        list.addEventListener('click', (event) => {
-            if (event.target.matches('[data-add-type]')) {
-                activeTypeSelect = event.target.closest('[data-type-field]').querySelector('[data-type-select]');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                typeName.focus();
-                return;
-            }
-            if (!event.target.matches('[data-remove-bonsai]')) return;
+         list.addEventListener('click', (event) => {
+             if (!event.target.matches('[data-remove-bonsai]')) return;
             const cards = list.querySelectorAll('[data-bonsai]');
             if (cards.length === 1) return;
             event.target.closest('[data-bonsai]').remove();
         });
 
-        const closeTypeModal = () => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            typeForm.reset();
-            typeError.classList.add('hidden');
-        };
-
-        document.querySelector('#close-type-modal').addEventListener('click', closeTypeModal);
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) closeTypeModal();
-        });
-
-        typeForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            typeError.classList.add('hidden');
-            const response = await fetch('{{ route('bonsai-types.store') }}', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                },
-                body: JSON.stringify({ name: typeName.value }),
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                typeError.textContent = data.errors?.name?.[0] ?? 'Jenis bonsai gagal disimpan.';
-                typeError.classList.remove('hidden');
-                return;
-            }
-
-            const type = await response.json();
-            const option = new Option(type.name, type.id, true, true);
-            activeTypeSelect.add(option);
-            activeTypeSelect.value = type.id;
-            closeTypeModal();
-        });
-    </script>
+     </script>
 </body>
 </html>
