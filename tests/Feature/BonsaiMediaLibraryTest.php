@@ -20,7 +20,7 @@ it('provides the species listed on Bonsai Empire', function () {
         ->not->toContain('Maple');
 });
 
-it('uses the bonsai type in its generated ID and media filename', function () {
+it('uses the bonsai type and details in its generated ID and media filename', function () {
     $participant = Participant::factory()->create([
         'name' => 'Muhammad Raihan',
     ]);
@@ -28,6 +28,8 @@ it('uses the bonsai type in its generated ID and media filename', function () {
     $bonsai = Bonsai::factory()->create([
         'participant_id' => $participant->id,
         'bonsai_type_id' => BonsaiType::query()->where('name', 'Bonsai Cemara (Juniperus)')->value('id'),
+        'size' => 'Mame',
+        'class' => 'Prospek',
         'photo' => null,
     ]);
 
@@ -38,11 +40,11 @@ it('uses the bonsai type in its generated ID and media filename', function () {
     $media = $bonsai->getPhotoMedia();
 
     expect($bonsai->bonsai_code)->toStartWith('BONSAICEMARAJUNIPERUS-')
-        ->and($media?->file_name)->toBe('Muhammad Raihan - Bonsai Cemara (Juniperus).jpg')
-        ->and($media?->getPathRelativeToRoot())->toBe('bonsais/Muhammad Raihan - Bonsai Cemara (Juniperus).jpg')
+        ->and($media?->file_name)->toBe('Muhammad Raihan - Bonsai Cemara (Juniperus) - Mame - Prospek - '.$bonsai->id.'.jpg')
+        ->and($media?->getPathRelativeToRoot())->toBe('bonsais/Muhammad Raihan - Bonsai Cemara (Juniperus) - Mame - Prospek - '.$bonsai->id.'.jpg')
         ->and($media?->hasGeneratedConversion('optimized'))->toBeFalse();
 
-    Storage::disk('public')->assertExists('bonsais/Muhammad Raihan - Bonsai Cemara (Juniperus).jpg');
+    Storage::disk('public')->assertExists($media->getPathRelativeToRoot());
 });
 
 it('downloads the original media library photo with its filename', function () {

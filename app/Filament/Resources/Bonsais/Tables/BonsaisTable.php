@@ -74,6 +74,13 @@ class BonsaisTable
             ->recordActions([
                 EditAction::make(),
 
+                Action::make('download_photo')
+                    ->label('Download Foto')
+                    ->icon('heroicon-m-arrow-down-tray')
+                    ->color('gray')
+                    ->action(fn (Bonsai $record) => $record->downloadPhoto())
+                    ->visible(fn (Bonsai $record): bool => $record->getPhotoMedia() !== null || filled($record->photo)),
+
                 // Download Participant Certificate
                 Action::make('download_participant_certificate')
                     ->label('Download Peserta')
