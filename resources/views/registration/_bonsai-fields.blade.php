@@ -12,7 +12,7 @@
             <label for="bonsais-{{ $index }}-size" class="mb-2 block text-sm font-medium">Ukuran</label>
             <select id="bonsais-{{ $index }}-size" name="bonsais[{{ $index }}][size]" required class="w-full rounded-xl border-stone-300 bg-white px-4 py-3 shadow-sm focus:border-emerald-600 focus:ring-emerald-600">
                 <option value="">Pilih ukuran</option>
-                @foreach (['Small', 'Medium', 'Large'] as $size)<option value="{{ $size }}" @selected($value('size') === $size)>{{ $size }}</option>@endforeach
+                @foreach (['Small', 'Medium', 'Large', 'Mame'] as $size)<option value="{{ $size }}" @selected($value('size') === $size)>{{ $size }}</option>@endforeach
             </select>
         </div>
         <div>

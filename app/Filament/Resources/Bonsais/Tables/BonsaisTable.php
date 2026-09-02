@@ -55,6 +55,7 @@ class BonsaisTable
                         'Small' => 'Small',
                         'Medium' => 'Medium',
                         'Large' => 'Large',
+                        'Mame' => 'Mame',
                     ]),
 
                 SelectFilter::make('class')

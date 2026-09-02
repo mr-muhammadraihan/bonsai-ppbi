@@ -16,7 +16,7 @@ class BonsaiFactory extends Factory
         return [
             'participant_id' => Participant::factory(),
             'bonsai_type_id' => BonsaiType::factory(),
-            'size' => $this->faker->randomElement(['Small', 'Medium', 'Large']),
+            'size' => $this->faker->randomElement(['Small', 'Medium', 'Large', 'Mame']),
             'class' => $this->faker->randomElement(['Jadi', 'Prospek']),
             'status' => $this->faker->randomElement(['Peserta', 'Pemenang']),
             'predicate' => null,

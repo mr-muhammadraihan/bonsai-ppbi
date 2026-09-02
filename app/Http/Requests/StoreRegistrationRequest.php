@@ -28,7 +28,7 @@ class StoreRegistrationRequest extends FormRequest
             'no_hp' => ['nullable', 'string', 'max:30'],
             'bonsais' => ['required', 'array', 'min:1', 'max:20'],
             'bonsais.*.bonsai_type' => ['required', 'string', 'max:255'],
-            'bonsais.*.size' => ['required', 'in:Small,Medium,Large'],
+            'bonsais.*.size' => ['required', 'in:Small,Medium,Large,Mame'],
             'bonsais.*.class' => ['required', 'in:Jadi,Prospek'],
             'bonsais.*.status' => ['required', 'in:Peserta,Pemenang'],
             'bonsais.*.predicate' => ['nullable', 'string', 'max:255'],

@@ -36,6 +36,7 @@ class BonsaiForm
                         'Small' => 'Small',
                         'Medium' => 'Medium',
                         'Large' => 'Large',
+                        'Mame' => 'Mame',
                     ])
                     ->required(),
 

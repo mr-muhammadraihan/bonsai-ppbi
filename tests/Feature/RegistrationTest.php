@@ -16,6 +16,7 @@ it('renders the public registration form', function () {
         ->assertSee('Data peserta')
         ->assertSee('Data bonsai')
         ->assertSee('Jenis bonsai')
+        ->assertSee('Mame')
         ->assertSee('Tambah bonsai')
         ->assertDontSee('Nomor WhatsApp')
         ->assertDontSee('Email')
@@ -37,7 +38,7 @@ it('stores a participant and all bonsais submitted in one form', function () {
             ],
             [
                 'bonsai_type' => 'Bonsai koleksi baru',
-                'size' => 'Small',
+                'size' => 'Mame',
                 'class' => 'Prospek',
                 'status' => 'Peserta',
                 'predicate' => null,
@@ -53,6 +54,8 @@ it('stores a participant and all bonsais submitted in one form', function () {
     expect($participant->bonsais)->toHaveCount(2);
     expect(Bonsai::query()->where('participant_id', $participant->id)->pluck('bonsai_type')->all())
         ->toContain('Bonsai koleksi baru');
+    expect(Bonsai::query()->where('participant_id', $participant->id)->pluck('size')->all())
+        ->toContain('Mame');
     Storage::disk('public')->assertExists('bonsais/Muhammad Raihan - Bonsai Beringin - Ficus.jpg');
 });
 
