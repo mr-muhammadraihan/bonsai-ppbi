@@ -65,12 +65,14 @@ class BonsaiForm
                     ->label('Foto Bonsai Saat Ini')
                     ->content(function ($record) {
                         $media = $record?->getPhotoMedia();
-                        $url = $media?->getUrl();
 
-                        if (! $url && $record?->photo) {
-                            // $url = Storage::disk('public')->url($record->photo);
-                            $url = Storage::disk('bonsai')->url($record->photo);
+                        if (! $media) {
+                            return 'Belum ada foto';
                         }
+
+                        $url = $media->disk === 'bonsai'
+                            ? $media->getTemporaryUrl(now()->addMinutes(10))
+                            : null;
 
                         return $url
                             ? new HtmlString(
