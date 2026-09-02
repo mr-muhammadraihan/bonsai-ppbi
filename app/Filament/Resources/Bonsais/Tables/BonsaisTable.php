@@ -21,7 +21,7 @@ class BonsaisTable
         return $table
             ->columns([
                 ImageColumn::make('photo')
-                    ->imageHeight(500)
+                    ->imageHeight(300)
                     ->checkFileExistence(false)
                     ->label('Foto Bonsai')
                     ->state(fn (Bonsai $record): ?string => $record->getPhotoMedia()?->getUrl()),
