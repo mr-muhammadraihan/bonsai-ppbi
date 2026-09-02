@@ -68,7 +68,8 @@ class BonsaiForm
                         $url = $media?->getUrl();
 
                         if (! $url && $record?->photo) {
-                            $url = Storage::disk('public')->url($record->photo);
+                            // $url = Storage::disk('public')->url($record->photo);
+                            $url = Storage::disk('bonsai')->url($record->photo);
                         }
 
                         return $url

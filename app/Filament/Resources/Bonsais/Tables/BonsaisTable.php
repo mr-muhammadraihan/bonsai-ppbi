@@ -25,7 +25,19 @@ class BonsaisTable
                     ->checkFileExistence(false)
                     ->label('Foto Bonsai')
                     // ->state(fn (Bonsai $record): ?string => $record->getPhotoMedia()?->getUrl()),
-                    ->state(fn (Bonsai $record): ?string => $record->getPhotoMedia()?->getTemporaryUrl(now()->addMinutes(10))),
+                    ->state(function (Bonsai $record): ?string {
+                        $media = $record->getPhotoMedia();
+
+                        if (! $media) {
+                            return null;
+                        }
+
+                        if ($media->disk === 'bonsai') {
+                            return $media->getTemporaryUrl(now()->addMinutes(10));
+                        }
+
+                        return null;
+                    }),
                 // ->directory('bonsais'),
 
                 TextColumn::make('bonsai_type')
