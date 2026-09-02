@@ -90,7 +90,8 @@ class Bonsai extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('bonsai-photos')->useDisk('public')->singleFile();
+        // $this->addMediaCollection('bonsai-photos')->useDisk('public')->singleFile();
+        $this->addMediaCollection('bonsai-photos')->useDisk('bonsai')->singleFile();
     }
 
     public function getPhotoMedia(): ?Media
