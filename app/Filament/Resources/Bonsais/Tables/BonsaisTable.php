@@ -24,7 +24,8 @@ class BonsaisTable
                     ->imageHeight(300)
                     ->checkFileExistence(false)
                     ->label('Foto Bonsai')
-                    ->state(fn (Bonsai $record): ?string => $record->getPhotoMedia()?->getUrl()),
+                    // ->state(fn (Bonsai $record): ?string => $record->getPhotoMedia()?->getUrl()),
+                    ->state(fn (Bonsai $record): ?string => $record->getPhotoMedia()?->getTemporaryUrl(now()->addMinutes(10))),
                 // ->directory('bonsais'),
 
                 TextColumn::make('bonsai_type')
