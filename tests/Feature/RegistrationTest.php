@@ -17,6 +17,8 @@ it('renders the public registration form', function () {
         ->assertSee('Data bonsai')
         ->assertSee('Jenis bonsai')
         ->assertSee('Mame')
+        ->assertSee('Shito')
+        ->assertSee('Extra Large')
         ->assertSee('Tambah bonsai')
         ->assertDontSee('Nomor WhatsApp')
         ->assertDontSee('Email')
@@ -48,9 +50,9 @@ it('stores a participant and all bonsais submitted in one form', function () {
         ],
     ]);
 
+    $response->assertRedirect(route('registration.create'));
     $participant = Participant::query()->where('name', 'Muhammad Raihan')->firstOrFail();
 
-    $response->assertRedirect(route('registration.create'));
     expect($participant->bonsais)->toHaveCount(2);
     expect(Bonsai::query()->where('participant_id', $participant->id)->pluck('bonsai_type')->all())
         ->toContain('Bonsai koleksi baru');
@@ -68,6 +70,30 @@ it('creates a new bonsai type from the public modal endpoint', function () {
     $response->assertCreated()
         ->assertJsonPath('name', 'Bonsai Kemuning');
     $this->assertDatabaseHas('bonsai_types', ['name' => 'Bonsai Kemuning']);
+});
+
+it('accepts Shito and Extra Large bonsai sizes', function () {
+    $response = $this->from('/registrasi')->post('/registrasi', [
+        'name' => 'Peserta Ukuran Baru',
+        'bonsais' => [
+            [
+                'bonsai_type' => 'Bonsai Shito',
+                'size' => 'Shito',
+                'class' => 'Jadi',
+                'status' => 'Peserta',
+            ],
+            [
+                'bonsai_type' => 'Bonsai Extra Large',
+                'size' => 'Extra Large',
+                'class' => 'Jadi',
+                'status' => 'Peserta',
+            ],
+        ],
+    ]);
+
+    $response->assertRedirect('/registrasi')
+        ->assertSessionHasErrors(['bonsais.0.photo', 'bonsais.1.photo'])
+        ->assertSessionDoesntHaveErrors(['bonsais.0.size', 'bonsais.1.size']);
 });
 
 it('rejects a registration without a bonsai photo', function () {

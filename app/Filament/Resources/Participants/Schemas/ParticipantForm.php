@@ -30,6 +30,8 @@ class ParticipantForm
                                 'Medium' => 'Medium',
                                 'Large' => 'Large',
                                 'Mame' => 'Mame',
+                                'Shito' => 'Shito',
+                                'Extra Large' => 'Extra Large',
                             ])
                             ->required(),
 

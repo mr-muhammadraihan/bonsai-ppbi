@@ -8,4 +8,6 @@ enum BonsaiSize: string
     case MEDIUM = 'Medium';
     case LARGE = 'Large';
     case MAME = 'Mame';
+    case SHITO = 'Shito';
+    case EXTRA_LARGE = 'Extra Large';
 }

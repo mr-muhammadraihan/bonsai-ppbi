@@ -8,7 +8,6 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
 
 class BonsaiForm
@@ -37,6 +36,8 @@ class BonsaiForm
                         'Medium' => 'Medium',
                         'Large' => 'Large',
                         'Mame' => 'Mame',
+                        'Shito' => 'Shito',
+                        'Extra Large' => 'Extra Large',
                     ])
                     ->required(),
 

@@ -20,6 +20,8 @@ class BonsaiSizeStats extends ChartWidget
                         Bonsai::where('size', 'Medium')->count(),
                         Bonsai::where('size', 'Large')->count(),
                         Bonsai::where('size', 'Mame')->count(),
+                        Bonsai::where('size', 'Shito')->count(),
+                        Bonsai::where('size', 'Extra Large')->count(),
                     ],
                 ],
             ],
@@ -29,6 +31,8 @@ class BonsaiSizeStats extends ChartWidget
                 'Medium',
                 'Large',
                 'Mame',
+                'Shito',
+                'Extra Large',
             ],
         ];
     }
